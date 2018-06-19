@@ -2,6 +2,9 @@ from SpiderModel.GatherproxyModel import GatherproxyModel
 from CommenModel.TaskQueue import TaskQueue
 from Thread.HttpbinWorkThread import HttpbinWorkThread
 
+import asyncio
+import concurrent.futures as cf
+
 def startSpider():
     THREAD_NUM = 6
 
@@ -16,10 +19,29 @@ def startSpider():
         workThraed = HttpbinWorkThread(unverifiedQueue)
         workThraed.start()
 
-    for proxy_item in TaskQueue.getVerificationQueue():
-        print(proxy_item)
+    workThraed.join()
+    # loop = asyncio.get_event_loop()
+    # loop.run_until_complete(main(unverifiedQueue))
 
 
+    unverifiedQueueIsEmpty = False
+    while not unverifiedQueueIsEmpty:
+        if TaskQueue.isVerificationQueueEmpty():
+            unverifiedQueueIsEmpty = True
+        else:
+            print(TaskQueue.getVerificationQueue().get())
+
+# async def main(queue):
+#     with cf.ThreadPoolExecutor(max_workers=6) as executor:
+#         HttpbinObj = HttpbinWorkThread(queue)
+#         loop = asyncio.get_event_loop()
+#         futures = (
+#             loop.run_in_executor(
+#                 executor,
+#                 HttpbinWorkThread(queue).run,
+#             )
+#         )
+#         await asyncio.gather(*futures)
 
 if __name__ == '__main__':
     startSpider()

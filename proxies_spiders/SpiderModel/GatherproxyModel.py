@@ -20,15 +20,15 @@ class GatherproxyModel(object):
         爬取页面的代理IP信息
         :return: 单个以字典形式存储IP信息的list
         '''
+        headers = {
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36',
+            'Accept-Encoding': 'gzip, deflate',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language': 'zh-CN,zh;q=0.9',
+        }
         search_url = 'http://www.gatherproxy.com/zh/'
         try:
-            html = requests.get(search_url, headers={
-                    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36',
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-                    'Accept-Encoding': 'gzip, deflate',
-                    'Accept-Language': 'zh-CN,zh;q=0.9',
-                    'Referer': 'http://www.gatherproxy.com/zh/',
-                }).content.decode('utf-8')
+            html = requests.get(search_url, headers=headers).content.decode('utf-8')
         except Exception as e:
             print(e)
         else:
@@ -48,7 +48,7 @@ class GatherproxyModel(object):
                         proxies_cen = dict_info['PROXY_UPTIMELD']
                         # 延迟
                         proxies_cen_fast = dict_info['PROXY_TIME']
-                        proxies_ip_port = '}:{}'.format(proxies_ip, proxies_port)
+                        proxies_ip_port = '{}:{}'.format(proxies_ip, proxies_port)
                     except IndexError:
                         pass
                     else:
