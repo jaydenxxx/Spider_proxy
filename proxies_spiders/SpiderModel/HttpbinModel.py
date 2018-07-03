@@ -11,6 +11,6 @@ class HttpbinModel(object):
 
     def CheckEffective(self):
         html = requests.get('https://httpbin.org/ip', headers=HeaderModel.getHeaders(), proxies=self.proxy, timeout=5)
-        if  html.status_code != '200':
+        if html.status_code != '200':
             pass
 

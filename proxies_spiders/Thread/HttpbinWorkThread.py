@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-import time
 import json
 import threading
 
@@ -13,7 +12,6 @@ class HttpbinWorkThread(threading.Thread):
     def __init__(self, queue):
         threading.Thread.__init__(self)
         self.queue = queue
-
 
     def processProxy(self, proxy):
         '''
@@ -34,23 +32,31 @@ class HttpbinWorkThread(threading.Thread):
                 self.queue.task_done()
                 break
 
-            proxy = self.queue.get()
-            proxy = self.processProxy(proxy)
+            #包括代理IP信息的dict类型数据
+            proxy_dict = self.queue.get()
+            #符合get方法的代理IP格式类型
+            proxy = self.processProxy(proxy_dict)
             try:
                 html = requests.get('https://httpbin.org/ip', headers=HeaderModel.getHeaders(), proxies=proxy)
+                #请求httpbin非200
                 if html.status_code != 200:
-                    print('线程执行结果：请求code非200，重新加入队列')
-                    self.queue.put(proxy, 3)
-                    time.sleep(10)
+                    print('线程执行结果：无效代理IP')
 
+                #请求httpbin成功
                 else:
                     # soup = BeautifulSoup(html.content, 'html.parser').find('pre').text
                     soup_dic = json.loads(html.text)
+                    #请求结果的IP和代理IP 相同
                     if soup_dic['origin'] in str(proxy):
-                        TaskQueue.putVerificationQueue(proxy)
+                        proxy_item = {
+                            'proxy_info': proxy_dict,
+                            'request_get_proxy': proxy,
+                        }
+                        TaskQueue.putVerificationQueue(proxy_item)
                         print('线程执行结果：代理IP{}为有效！,剩余待执行{}'.format(soup_dic, len(self.queue.queue)))
+                    # 请求结果的IP和代理IP不 相同
                     else:
                         pass
-
+            #请求异常
             except Exception as e:
                 print('线程执行结果：异常{}！,剩余待执行{}'.format(e, len(self.queue.queue)))

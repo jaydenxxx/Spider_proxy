@@ -1,6 +1,7 @@
 from SpiderModel.GatherproxyModel import GatherproxyModel
 from CommenModel.TaskQueue import TaskQueue
 from Thread.HttpbinWorkThread import HttpbinWorkThread
+from redis_client import ProxyRedis
 
 import asyncio
 import concurrent.futures as cf
@@ -20,16 +21,19 @@ def startSpider():
         workThraed.start()
 
     workThraed.join()
+    print("多进程执行完毕！")
     # loop = asyncio.get_event_loop()
     # loop.run_until_complete(main(unverifiedQueue))
 
 
-    unverifiedQueueIsEmpty = False
-    while not unverifiedQueueIsEmpty:
-        if TaskQueue.isVerificationQueueEmpty():
-            unverifiedQueueIsEmpty = True
-        else:
-            print(TaskQueue.getVerificationQueue().get())
+    # unverifiedQueueIsEmpty = False
+    # while not unverifiedQueueIsEmpty:
+    #     if TaskQueue.isVerificationQueueEmpty():
+    #         unverifiedQueueIsEmpty = True
+    #     else:
+    #         print(TaskQueue.getVerificationQueue().get())
+
+    ProxyRedis.start()
 
 # async def main(queue):
 #     with cf.ThreadPoolExecutor(max_workers=6) as executor:
