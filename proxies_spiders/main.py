@@ -21,6 +21,7 @@ def startSpider():
         workThraed.start()
 
     workThraed.join()
+    workThraed.clean()
     print("多进程执行完毕！")
     # loop = asyncio.get_event_loop()
     # loop.run_until_complete(main(unverifiedQueue))

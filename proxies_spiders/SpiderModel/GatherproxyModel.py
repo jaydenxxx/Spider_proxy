@@ -34,21 +34,22 @@ class GatherproxyModel(object):
 
 
 
+        # try:
+        #     html = get_html_from_proxy(search_url, headers)
+        # except Exception as e:
+        #     print(e)
+        print("%s：爬取代理网站开始" % time.strftime("%Y-%m-%d %H:%M:%S"))
         try:
-            html = get_html_from_proxy(search_url, headers)
-        except Exception as e:
-            print(e)
-            try:
-                time.sleep(0.5)
-                html = requests.get(search_url, headers=headers).content.decode('utf-8')
-            #如果通过服务器本地IP爬网站异常，则调用本方法再次爬取
-            except:
-                time.sleep(1)
-                GatherproxyModel.getProxyList()
+            time.sleep(0.5)
+            html = requests.get(search_url, headers=headers).content.decode('utf-8')
+            print("%s：爬取代理网站成功" % time.strftime("%Y-%m-%d %H:%M:%S"))
+        #如果通过服务器本地IP爬网站异常，则调用本方法再次爬取
+        except:
+            print("%s：爬取代理网站失败" % time.strftime("%Y-%m-%d %H:%M:%S"))
+            time.sleep(1)
+            # GatherproxyModel.getProxyList()
 
         #处理html
-        if isinstance(html, 'bytes'):
-            html = html.decode('utf-8')
         soup = BeautifulSoup(html, 'html.parser').find_all('script')
         proxy_dict = []
         for item in soup:
@@ -79,6 +80,7 @@ class GatherproxyModel(object):
                     })
             else:
                 pass
+        print("%s：爬取代理网站完成" % time.strftime("%Y-%m-%d %H:%M:%S"))
         return proxy_dict
 
 def get_html_from_proxy(search_url, headers):

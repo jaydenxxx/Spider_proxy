@@ -5,7 +5,7 @@ import time
 from CommenModel.TaskQueue import TaskQueue
 
 def get_redis_pool():
-    pool = redis.ConnectionPool(host='127.0.0.1', port=6379, password='199redis-pwd', db=0)
+    pool = redis.ConnectionPool(host='172.245.154.199', port=6379, password='199redis-pwd', db=0)
     r = redis.StrictRedis(connection_pool=pool)
     return r
 
