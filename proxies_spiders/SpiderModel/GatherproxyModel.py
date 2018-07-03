@@ -47,6 +47,8 @@ class GatherproxyModel(object):
                 GatherproxyModel.getProxyList()
 
         #处理html
+        if isinstance(html, 'bytes'):
+            html = html.decode('utf-8')
         soup = BeautifulSoup(html, 'html.parser').find_all('script')
         proxy_dict = []
         for item in soup:
