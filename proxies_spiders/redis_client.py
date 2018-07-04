@@ -3,9 +3,10 @@ import json
 import time
 
 from CommenModel.TaskQueue import TaskQueue
+import config
 
 def get_redis_pool():
-    pool = redis.ConnectionPool(host='172.245.154.199', port=6379, password='199redis-pwd', db=0)
+    pool = redis.ConnectionPool(host=config.redis_config['address'], port=config.redis_config['port'], password=config.redis_config['password'], db=0)
     r = redis.StrictRedis(connection_pool=pool)
     return r
 
